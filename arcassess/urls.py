@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.generic import TemplateView
 from django.conf import settings
 
-from teamtemp.views import home, admin, submit, register, result
+from arcassess.views import home, admin, submit, register, result
 
 urlpatterns = patterns('',
     url(r'^$', home, name='home'),

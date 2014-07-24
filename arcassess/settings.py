@@ -1,4 +1,4 @@
-# Django settings for teamtemp project.
+# Django settings for arcassess project.
 import os
 import dj_database_url
 
@@ -99,10 +99,10 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-ROOT_URLCONF = 'teamtemp.urls'
+ROOT_URLCONF = 'arcassess.urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
-WSGI_APPLICATION = 'teamtemp.wsgi.application'
+WSGI_APPLICATION = 'arcassess.wsgi.application'
 
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
@@ -122,7 +122,7 @@ INSTALLED_APPS = (
     # 'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
-    'teamtemp.responses',
+    'arcassess.responses',
     'south',
 )
 

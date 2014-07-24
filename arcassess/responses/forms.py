@@ -1,6 +1,6 @@
 from django import forms
 from django.forms.util import ErrorList
-from teamtemp.responses.models import TemperatureResponse
+from arcassess.responses.models import TemperatureResponse
 from django.utils.safestring import mark_safe
 from django.utils.html import escape
 import re

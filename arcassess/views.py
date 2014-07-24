@@ -7,7 +7,7 @@ from django.shortcuts import render, HttpResponseRedirect, get_object_or_404
 
 from responses.forms import SurveyResponseForm, ErrorBox
 from responses.models import User, TeamTemperature, TemperatureResponse
-from teamtemp import utils, responses
+from arcassess import utils, responses
 
 
 def admin(request):
