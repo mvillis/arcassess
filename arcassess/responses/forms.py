@@ -1,6 +1,6 @@
 from django import forms
 from django.forms.util import ErrorList
-from arcassess.responses.models import TemperatureResponse
+from arcassess.responses.models import Response
 from django.utils.safestring import mark_safe
 from django.utils.html import escape
 import re
@@ -18,7 +18,7 @@ class ErrorBox(ErrorList):
 
 class SurveyResponseForm(forms.ModelForm):
     class Meta:
-        model = TemperatureResponse
+        model = Response
         fields = ['score', 'word']
 
     def clean_score(self):

@@ -5,14 +5,14 @@ class User(models.Model):
     id = models.CharField(max_length=8, primary_key=True)
 
 
-class TeamTemperature(models.Model):
+class ArcAssess(models.Model):
     id = models.CharField(max_length=8, primary_key=True)
     creation_date = models.DateField()
     creator = models.ForeignKey(django.contrib.auth.models.User)
 
     def stats(self):
         result = dict()
-        responses = self.temperatureresponse_set.all()
+        responses = self.response_set.all()
         result['count'] = responses.count()
         result['average'] = responses.aggregate(models.Avg('score'))
         result['words'] = responses.values('word').annotate(models.Count("id")).order_by()
@@ -23,8 +23,8 @@ class TeamTemperature(models.Model):
                                    self.creation_date)
 
 
-class TemperatureResponse(models.Model):
-    request = models.ForeignKey(TeamTemperature)
+class Response(models.Model):
+    request = models.ForeignKey(ArcAssess)
     responder = models.ForeignKey(User)
     score = models.IntegerField()
     word = models.CharField(max_length=32)

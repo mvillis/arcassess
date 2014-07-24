@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import datetime
+from south.utils import datetime_utils as datetime
 from south.db import db
 from south.v2 import SchemaMigration
 from django.db import models
@@ -8,26 +8,41 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Deleting field 'TeamTemperature.password'
-        db.delete_column(u'responses_teamtemperature', 'password')
+        # Adding model 'User'
+        db.create_table(u'responses_user', (
+            ('id', self.gf('django.db.models.fields.CharField')(max_length=8, primary_key=True)),
+        ))
+        db.send_create_signal(u'responses', ['User'])
 
+        # Adding model 'ArcAssess'
+        db.create_table(u'responses_arcassess', (
+            ('id', self.gf('django.db.models.fields.CharField')(max_length=8, primary_key=True)),
+            ('creation_date', self.gf('django.db.models.fields.DateField')()),
+            ('creator', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
+        ))
+        db.send_create_signal(u'responses', ['ArcAssess'])
 
-        # Changing field 'TeamTemperature.creator'
-        db.alter_column(u'responses_teamtemperature', 'creator_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User']))
+        # Adding model 'Response'
+        db.create_table(u'responses_response', (
+            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('request', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['responses.ArcAssess'])),
+            ('responder', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['responses.User'])),
+            ('score', self.gf('django.db.models.fields.IntegerField')()),
+            ('word', self.gf('django.db.models.fields.CharField')(max_length=32)),
+        ))
+        db.send_create_signal(u'responses', ['Response'])
+
 
     def backwards(self, orm):
+        # Deleting model 'User'
+        db.delete_table(u'responses_user')
 
-        # User chose to not deal with backwards NULL issues for 'TeamTemperature.password'
-        raise RuntimeError("Cannot reverse this migration. 'TeamTemperature.password' and its values cannot be restored.")
-        
-        # The following code is provided here to aid in writing a correct migration        # Adding field 'TeamTemperature.password'
-        db.add_column(u'responses_teamtemperature', 'password',
-                      self.gf('django.db.models.fields.CharField')(max_length=256),
-                      keep_default=False)
+        # Deleting model 'ArcAssess'
+        db.delete_table(u'responses_arcassess')
 
+        # Deleting model 'Response'
+        db.delete_table(u'responses_response')
 
-        # Changing field 'TeamTemperature.creator'
-        db.alter_column(u'responses_teamtemperature', 'creator_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['responses.User']))
 
     models = {
         u'auth.group': {
@@ -48,7 +63,7 @@ class Migration(SchemaMigration):
             'date_joined': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
             'email': ('django.db.models.fields.EmailField', [], {'max_length': '75', 'blank': 'True'}),
             'first_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
-            'groups': ('django.db.models.fields.related.ManyToManyField', [], {'to': u"orm['auth.Group']", 'symmetrical': 'False', 'blank': 'True'}),
+            'groups': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'related_name': "u'user_set'", 'blank': 'True', 'to': u"orm['auth.Group']"}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'is_active': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'is_staff': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
@@ -56,7 +71,7 @@ class Migration(SchemaMigration):
             'last_login': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
             'last_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
             'password': ('django.db.models.fields.CharField', [], {'max_length': '128'}),
-            'user_permissions': ('django.db.models.fields.related.ManyToManyField', [], {'to': u"orm['auth.Permission']", 'symmetrical': 'False', 'blank': 'True'}),
+            'user_permissions': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'related_name': "u'user_set'", 'blank': 'True', 'to': u"orm['auth.Permission']"}),
             'username': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '30'})
         },
         u'contenttypes.contenttype': {
@@ -66,16 +81,16 @@ class Migration(SchemaMigration):
             'model': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
         },
-        u'responses.teamtemperature': {
-            'Meta': {'object_name': 'TeamTemperature'},
+        u'responses.arcassess': {
+            'Meta': {'object_name': 'ArcAssess'},
             'creation_date': ('django.db.models.fields.DateField', [], {}),
             'creator': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.User']"}),
             'id': ('django.db.models.fields.CharField', [], {'max_length': '8', 'primary_key': 'True'})
         },
-        u'responses.temperatureresponse': {
-            'Meta': {'object_name': 'TemperatureResponse'},
+        u'responses.response': {
+            'Meta': {'object_name': 'Response'},
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'request': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['responses.TeamTemperature']"}),
+            'request': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['responses.ArcAssess']"}),
             'responder': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['responses.User']"}),
             'score': ('django.db.models.fields.IntegerField', [], {}),
             'word': ('django.db.models.fields.CharField', [], {'max_length': '32'})
