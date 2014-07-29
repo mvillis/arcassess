@@ -1,0 +1,10 @@
+- model: responses.SurveyTemplate
+  pk: 1
+  fields:
+    word_flag: true
+    name: Architecture
+- model: responses.Question
+  pk: 1
+  fields:
+    question: Successful?
+    template: 1

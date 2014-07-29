@@ -6,17 +6,21 @@
 {% if thanks %}
 <div class="info box">{{ thanks }}</div>
 {% endif %}
-<h1>Submit your temperature</h1>
+<h1>Questions</h1>
 <form method="post">
   {% csrf_token %}
   {% if response_id %}
   <input type="hidden" name="id" value="{{ response_id }}"/>
   {% endif %}
+    <fieldset id="ratings">
+  {% for question in form.data.questions %}
   {{ form.score.errors }}
   <div class="field">
-    <label for="id_score">Temperature (1-10):</label><br/>
-    {{ form.score }}
+    <label for="{{ question.id }}">{{ question.question }} (1-10):</label><br/>
+    <input id="{{ question.id }}" type="number" name="{{ question.id }}">
   </div>
+  {% endfor %}
+</fieldset>
   {{ form.word.errors }}
   <div class="field">
     <label for="id_word">One word to describe how you're feeling:</label><br/>

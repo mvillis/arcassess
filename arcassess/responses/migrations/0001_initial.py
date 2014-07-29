@@ -14,34 +14,80 @@ class Migration(SchemaMigration):
         ))
         db.send_create_signal(u'responses', ['User'])
 
-        # Adding model 'ArcAssess'
-        db.create_table(u'responses_arcassess', (
-            ('id', self.gf('django.db.models.fields.CharField')(max_length=8, primary_key=True)),
-            ('creation_date', self.gf('django.db.models.fields.DateField')()),
-            ('creator', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
+        # Adding model 'SurveyTemplate'
+        db.create_table(u'responses_surveytemplate', (
+            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('name', self.gf('django.db.models.fields.CharField')(max_length=128)),
+            ('word_flag', self.gf('django.db.models.fields.BooleanField')(default=True)),
         ))
-        db.send_create_signal(u'responses', ['ArcAssess'])
+        db.send_create_signal(u'responses', ['SurveyTemplate'])
+
+        # Adding M2M table for field users on 'SurveyTemplate'
+        m2m_table_name = db.shorten_name(u'responses_surveytemplate_users')
+        db.create_table(m2m_table_name, (
+            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
+            ('surveytemplate', models.ForeignKey(orm[u'responses.surveytemplate'], null=False)),
+            ('user', models.ForeignKey(orm[u'auth.user'], null=False))
+        ))
+        db.create_unique(m2m_table_name, ['surveytemplate_id', 'user_id'])
+
+        # Adding model 'Assess'
+        db.create_table(u'responses_assess', (
+            ('id', self.gf('django.db.models.fields.CharField')(default='GaXgh27g', max_length=8, primary_key=True)),
+            ('creation_date', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
+            ('creator', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
+            ('template', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['responses.SurveyTemplate'])),
+        ))
+        db.send_create_signal(u'responses', ['Assess'])
 
         # Adding model 'Response'
         db.create_table(u'responses_response', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('request', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['responses.ArcAssess'])),
+            ('request', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['responses.Assess'])),
             ('responder', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['responses.User'])),
-            ('score', self.gf('django.db.models.fields.IntegerField')()),
             ('word', self.gf('django.db.models.fields.CharField')(max_length=32)),
         ))
         db.send_create_signal(u'responses', ['Response'])
+
+        # Adding model 'Question'
+        db.create_table(u'responses_question', (
+            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('template', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['responses.SurveyTemplate'])),
+            ('question', self.gf('django.db.models.fields.CharField')(max_length=256)),
+        ))
+        db.send_create_signal(u'responses', ['Question'])
+
+        # Adding model 'Rating'
+        db.create_table(u'responses_rating', (
+            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('response', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['responses.Response'])),
+            ('question', self.gf('django.db.models.fields.CharField')(max_length=256)),
+            ('score', self.gf('django.db.models.fields.IntegerField')()),
+        ))
+        db.send_create_signal(u'responses', ['Rating'])
 
 
     def backwards(self, orm):
         # Deleting model 'User'
         db.delete_table(u'responses_user')
 
-        # Deleting model 'ArcAssess'
-        db.delete_table(u'responses_arcassess')
+        # Deleting model 'SurveyTemplate'
+        db.delete_table(u'responses_surveytemplate')
+
+        # Removing M2M table for field users on 'SurveyTemplate'
+        db.delete_table(db.shorten_name(u'responses_surveytemplate_users'))
+
+        # Deleting model 'Assess'
+        db.delete_table(u'responses_assess')
 
         # Deleting model 'Response'
         db.delete_table(u'responses_response')
+
+        # Deleting model 'Question'
+        db.delete_table(u'responses_question')
+
+        # Deleting model 'Rating'
+        db.delete_table(u'responses_rating')
 
 
     models = {
@@ -81,19 +127,39 @@ class Migration(SchemaMigration):
             'model': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
         },
-        u'responses.arcassess': {
-            'Meta': {'object_name': 'ArcAssess'},
-            'creation_date': ('django.db.models.fields.DateField', [], {}),
+        u'responses.assess': {
+            'Meta': {'object_name': 'Assess'},
+            'creation_date': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'creator': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.User']"}),
-            'id': ('django.db.models.fields.CharField', [], {'max_length': '8', 'primary_key': 'True'})
+            'id': ('django.db.models.fields.CharField', [], {'default': "'GaXgh27g'", 'max_length': '8', 'primary_key': 'True'}),
+            'template': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['responses.SurveyTemplate']"})
+        },
+        u'responses.question': {
+            'Meta': {'object_name': 'Question'},
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'question': ('django.db.models.fields.CharField', [], {'max_length': '256'}),
+            'template': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['responses.SurveyTemplate']"})
+        },
+        u'responses.rating': {
+            'Meta': {'object_name': 'Rating'},
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'question': ('django.db.models.fields.CharField', [], {'max_length': '256'}),
+            'response': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['responses.Response']"}),
+            'score': ('django.db.models.fields.IntegerField', [], {})
         },
         u'responses.response': {
             'Meta': {'object_name': 'Response'},
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'request': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['responses.ArcAssess']"}),
+            'request': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['responses.Assess']"}),
             'responder': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['responses.User']"}),
-            'score': ('django.db.models.fields.IntegerField', [], {}),
             'word': ('django.db.models.fields.CharField', [], {'max_length': '32'})
+        },
+        u'responses.surveytemplate': {
+            'Meta': {'object_name': 'SurveyTemplate'},
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '128'}),
+            'users': ('django.db.models.fields.related.ManyToManyField', [], {'to': u"orm['auth.User']", 'symmetrical': 'False'}),
+            'word_flag': ('django.db.models.fields.BooleanField', [], {'default': 'True'})
         },
         u'responses.user': {
             'Meta': {'object_name': 'User'},

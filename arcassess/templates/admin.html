@@ -6,8 +6,10 @@
 
 {% block body %}
 <h1>Create a Team Temperature Survey</h1>
-<form method="post">
-  {% csrf_token %}
-  <input class="btn btn-primary btn-lg" type="submit" value="Create"/>
-</form>
+<a class="btn btn-primary btn-lg" href="{% url 'assess_create' %}">Launch</a>
+    <ul>
+        {% for assess in object_list %}
+            <li><a href="{% url 'result' assess.id %}">{{ assess }}</a></li>
+        {% endfor %}
+    </ul>
 {% endblock %}
