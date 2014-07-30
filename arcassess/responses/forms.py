@@ -41,10 +41,4 @@ class SurveyResponseForm(forms.Form):
             raise forms.ValidationError(error)
         return word
 
-    def get_score_for_question(self, question):
-        try:
-            return Rating.objects.get(question=question.question).score
-        except Rating.DoesNotExist:
-            return None
-
 
