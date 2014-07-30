@@ -49,10 +49,8 @@ def submit(request, survey_id):
             previous = Response.objects.get(request=survey_id, responder=user)
             ratings = Rating.objects.filter(response=previous)
             form_data = []
-            questions = []
             for rating in ratings:
                 question = Question.objects.get(template=survey.template, question=rating.question)
-                questions.append(question)
                 form_data.append([question.id, question.question, rating.score])
             response_id = previous.id
         except Response.DoesNotExist:
@@ -60,7 +58,7 @@ def submit(request, survey_id):
             response_id = None
             form_data = None
         data = {'response': previous, 'questions': form_data}
-        form = SurveyResponseForm(instance=previous, data=data)
+        form = SurveyResponseForm(data=data)
     return render(request, 'form.html', {'form': form, 'thanks': thanks, 'response_id': response_id})
 
 

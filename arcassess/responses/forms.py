@@ -20,10 +20,7 @@ class ErrorBox(ErrorList):
         return "<br/>".join(e for e in self)
 
 
-class SurveyResponseForm(forms.ModelForm):
-    class Meta:
-        model = Response
-        fields = ['word']
+class SurveyResponseForm(forms.Form):
 
     word = forms.CharField(label='Word', max_length=32)
 

@@ -24,7 +24,7 @@
   {{ form.word.errors }}
   <div class="field">
     <label for="id_word">One word to describe your overall feeling:</label><br/>
-    {{ form.word }}
+    <input id="id_word" type="text" name="id_work" value="{{ form.data.response.word }}">
   </div>
   <input type="submit" value="Submit"/>
 </form>
