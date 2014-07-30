@@ -35,21 +35,32 @@ def submit(request, survey_id):
             response.save()
             response_id = response.id
             for question in questions:
-                Rating(response=response, question=question.question, score=form.data[str(question.id)]).save()
+                try:
+                    previous = Rating.objects.get(response=response, question=question.question)
+                    previous.score = form.data[str(question.id)]
+                    previous.save()
+                except Rating.DoesNotExist:
+                    Rating(response=response, question=question.question, score=form.data[str(question.id)]).save()
             form = SurveyResponseForm(instance=response)
             thanks = "Thank you for submitting your answers. You can " \
                      "amend them now or later if you need to"
     else:
         try:
             previous = Response.objects.get(request=survey_id, responder=user)
+            ratings = Rating.objects.filter(response=previous)
+            form_data = []
+            questions = []
+            for rating in ratings:
+                question = Question.objects.get(template=survey.template, question=rating.question)
+                questions.append(question)
+                form_data.append([question.id, question.question, rating.score])
             response_id = previous.id
         except Response.DoesNotExist:
             previous = None
             response_id = None
-        data = {}
-        data['response'] = previous
-        data['questions'] = questions
-        form = SurveyResponseForm(data=data)
+            form_data = None
+        data = {'response': previous, 'questions': form_data}
+        form = SurveyResponseForm(instance=previous, data=data)
     return render(request, 'form.html', {'form': form, 'thanks': thanks, 'response_id': response_id})
 
 

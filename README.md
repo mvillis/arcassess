@@ -17,7 +17,7 @@ Note that the database url is an absolute path to a file. You will need to updat
 - `manage.py loaddata initial_load.yaml` This loads some basic setup data
 
 5. Run the app
-- `manage.py runserver`
+- `python manage.py runserver`
 - go to http://127.0.0.1:8000/
 - Register a new user
 - Go for it!

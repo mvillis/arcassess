@@ -16,14 +16,14 @@
   {% for question in form.data.questions %}
   {{ form.score.errors }}
   <div class="field">
-    <label for="{{ question.id }}">{{ question.question }} (1-10):</label><br/>
-    <input id="{{ question.id }}" type="number" name="{{ question.id }}">
+    <label for="{{ question.0 }}">{{ question.1 }} (1-10):</label><br/>
+    <input id="{{ question.0 }}" type="number" name="{{ question.0 }}" value="{{ question.2 }}">
   </div>
   {% endfor %}
 </fieldset>
   {{ form.word.errors }}
   <div class="field">
-    <label for="id_word">One word to describe how you're feeling:</label><br/>
+    <label for="id_word">One word to describe your overall feeling:</label><br/>
     {{ form.word }}
   </div>
   <input type="submit" value="Submit"/>

@@ -2,7 +2,7 @@ from django import forms
 from django.forms import ModelForm
 from django.forms.util import ErrorList
 from django.http import request
-from arcassess.responses.models import Response, Assess
+from arcassess.responses.models import Response, Assess, Rating
 from django.utils.safestring import mark_safe
 from django.utils.html import escape
 import re
@@ -43,5 +43,11 @@ class SurveyResponseForm(forms.ModelForm):
                     '{matches}'.format(word=escape(word), matches=list({str(x) for x in matches}))
             raise forms.ValidationError(error)
         return word
+
+    def get_score_for_question(self, question):
+        try:
+            return Rating.objects.get(question=question.question).score
+        except Rating.DoesNotExist:
+            return None
 
 
