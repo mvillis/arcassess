@@ -5,20 +5,20 @@
 {% block title %}Team Temperature{% endblock %}
 
 {% block body %}
-{#<h1>Create a Team Temperature Survey</h1>#}
+    <div class="container">
     <p><a class="btn btn-primary btn-" role="button" href="{% url 'assess_create' %}">Create Survey</a></p>
     <div class="panel panel-default">
         <!-- Default panel contents -->
         <div class="panel-heading">Past Surveys</div>
-        <div class="panel-body">
-            <p>Find all the templates you have launched below.</p>
-        </div>
+{#        <div class="panel-body">#}
+{#            <p>Find all the templates you have launched below.</p>#}
+{#        </div>#}
 
         <!-- Table -->
         <table class="table">
             <tr>
                 <th>#</th>
-                <th>Name</th>
+                <th>Template Name</th>
                 <th>Creation Date</th>
             </tr>
             {% for assess in object_list %}
@@ -27,5 +27,6 @@
                     <td><a href="{% url 'result' assess.id %}">{{ assess.creation_date }}</a></td></tr>
             {% endfor %}
         </table>
+    </div>
     </div>
 {% endblock %}

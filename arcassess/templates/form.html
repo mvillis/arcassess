@@ -1,31 +1,34 @@
 {% extends "base.html" %}
 
-{% block title %}Team Temperature{% endblock %}
+{% block title %}ArcAssess{% endblock %}
 
 {% block body %}
-{% if thanks %}
-<div class="info box">{{ thanks }}</div>
-{% endif %}
-<h1>Questions</h1>
-<form method="post">
-  {% csrf_token %}
-  {% if response_id %}
-  <input type="hidden" name="id" value="{{ response_id }}"/>
-  {% endif %}
-    <fieldset id="ratings">
-  {% for question in form.data.questions %}
-  {{ form.score.errors }}
-  <div class="field">
-    <label for="{{ question.0 }}">{{ question.1 }} (1-10):</label><br/>
-    <input id="{{ question.0 }}" type="number" name="{{ question.0 }}" value="{{ question.2 }}">
-  </div>
-  {% endfor %}
-</fieldset>
-  {{ form.word.errors }}
-  <div class="field">
-    <label for="word">One word to describe your overall feeling:</label><br/>
-    <input id="word" type="text" name="word" value="{{ form.data.response.word }}">
-  </div>
-  <input type="submit" value="Submit"/>
-</form>
+    <div class="container">
+        {% if thanks %}
+            <div class="info box">{{ thanks }}</div>
+        {% endif %}
+        <h1>Questions</h1>
+
+        <form method="post">
+            {% csrf_token %}
+            {% if response_id %}
+                <input type="hidden" name="id" value="{{ response_id }}"/>
+            {% endif %}
+            <fieldset id="ratings">
+                {% for question in form.data.questions %}
+                    {{ form.score.errors }}
+                    <div class="field">
+                        <label for="{{ question.0 }}">{{ question.1 }} (1-10):</label><br/>
+                        <input id="{{ question.0 }}" type="number" name="{{ question.0 }}" value="{{ question.2 }}">
+                    </div>
+                {% endfor %}
+            </fieldset>
+            {{ form.word.errors }}
+            <div class="field">
+                <label for="word">One word to describe your overall feeling:</label><br/>
+                <input id="word" type="text" name="word" value="{{ form.data.response.word }}">
+            </div>
+            <input type="submit" value="Submit"/>
+        </form>
+    </div>
 {% endblock %}

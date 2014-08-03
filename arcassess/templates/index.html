@@ -1,15 +1,19 @@
 {% extends "base.html" %}
 
-{% block title %}Team Temperature{% endblock %}
+{% block title %}ArcAssess{% endblock %}
 
 {% block body %}
-    <div class="jumbotron">
-        <h1>Welcome to ArcAssess!</h1>
-        <p>Want to measure the world? We have the solution for you.</p>
-        {% if user.is_authenticated %}
-            <p><a class="btn btn-primary btn-lg" role="button" href="{% url "admin" %}">Admin</a></p>
-        {% else %}
-            <p><a class="btn btn-primary btn-lg" role="button" href="{% url "register" %}">Register</a> <a class="btn btn-primary btn-lg" role="button" href="{% url "login" %}">Log In</a></p>
-        {% endif %}
+    <div class="container">
+        <div class="jumbotron">
+            <h1>Welcome to ArcAssess!</h1>
+
+            <p>Want to measure the world? We have the solution for you.</p>
+            {% if user.is_authenticated %}
+                <p><a class="btn btn-primary btn-lg" role="button" href="{% url "admin" %}">Admin</a></p>
+            {% else %}
+                <p><a class="btn btn-primary btn-lg" role="button" href="{% url "register" %}">Register</a> <a
+                        class="btn btn-primary btn-lg" role="button" href="{% url "login" %}">Log In</a></p>
+            {% endif %}
+        </div>
     </div>
 {% endblock %}

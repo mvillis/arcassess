@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% block body %}
+    <div class="container">
     <div class="panel panel-default">
         <!-- Default panel contents -->
         <div class="panel-heading">Survey Templates</div>
@@ -19,5 +20,6 @@
                 <td><a href="{% url "question_list" %}">{{ template.name }}</a></td></tr>
             {% endfor %}
         </table>
+    </div>
     </div>
 {% endblock %}

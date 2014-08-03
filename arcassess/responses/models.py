@@ -43,6 +43,13 @@ class Response(models.Model):
     responder = models.ForeignKey(User)
     word = models.CharField(max_length=32)
 
+    def stats(self):
+        result = dict()
+        ratings = self.rating_set.all()
+        result['average'] = ratings.aggregate(models.Avg('score'))
+        result['values'] = ratings.values('score')
+        return result
+
     def __unicode__(self):
         return u"{}: {} {} {} {}".format(self.id, self.request.id,
                                          self.responder.id,

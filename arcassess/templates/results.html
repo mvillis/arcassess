@@ -3,25 +3,46 @@
 {% block title %}Results{% endblock %}
 
 {% block body %}
-<div class="info box">Let your team know about this survey - send them 
-  <a href="{% url 'arcassess.views.submit' id %}">this link</a>.</div>
+    <div class="container">
+        <div class="alert alert-info" role="alert">
+            <strong>Share Survey:</strong> Let your team know about this survey - send them
+            <a href="{% url 'arcassess.views.submit' id %}">this link.</a>
+        </div>
 
-<h1>Summary</h1>
-<ul>
-  <li>Submissions: {{ stats.count }}</li>
-  <li>Average: {{ stats.average.rating__score__avg }}</li>
-  <li>Words: 
-  {% for word in stats.words %}
-  {{ word.word }}
-  {% if word.id__count > 1 %}({{ word.id__count }}){% endif %}
-    {% endfor %}</li>
-</ul>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Summary</h3>
+            </div>
+            <div class="panel-body">
+                <ul>
+                    <li>Submissions: {{ stats.count }}</li>
+                    <li>Average: {{ stats.average.rating__score__avg }}</li>
+                    <li>Words:
+                        {% for word in stats.words %}
+                            {{ word.word }}
+                            {% if word.id__count > 1 %}({{ word.id__count }}){% endif %}
+                        {% endfor %}</li>
+                </ul>
+            </div>
+        </div>
 
-<h1>Individual Responses</h1>
-<table>
-  <tr><th>Score</th><th>Word</th></tr>
-{% for result in results %}
-  <tr><td>{{result.score}}</td><td>{{result.word}}</td>
-{% endfor %}
-</table>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Individual Responses</h3>
+            </div>
+            <div class="panel-body">
+                <table class="table">
+                    <tr>
+                        <th>Score</th>
+                        <th>Word</th>
+                    </tr>
+                    {% for result in results %}
+                        <tr>
+                        <td>{{ result.stats.average.score__avg }}</td>
+                        <td>{{ result.word }}</td>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </div>
 {% endblock %}
