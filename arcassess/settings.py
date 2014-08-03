@@ -1,6 +1,7 @@
 # Django settings for arcassess project.
 import os
 import dj_database_url
+from django.core.urlresolvers import reverse_lazy
 
 DEBUG = os.environ.get('DJANGO_DEBUG', False)
 TEMPLATE_DEBUG = DEBUG
@@ -132,6 +133,8 @@ PASSWORD_HASHERS = (
 
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
+
+LOGIN_REDIRECT_URL = reverse_lazy('admin')
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to

@@ -42,7 +42,8 @@ def submit(request, survey_id):
                     previous.save()
                     form_data.append([question.id, question.question, previous.score])
                 except Rating.DoesNotExist:
-                    rating = Rating(response=response, question=question.question, score=form.data[str(question.id)]).save()
+                    rating = Rating(response=response, question=question.question, score=form.data[str(question.id)])
+                    rating.save()
                     form_data.append([question.id, question.question, rating.score])
             data = {'response': response, 'questions': form_data}
             form = SurveyResponseForm(data=data)
@@ -52,10 +53,11 @@ def submit(request, survey_id):
             # data = {'response': {'word': ''}, 'questions': form_data}
             form = SurveyResponseForm(data=data)
     else:
+        form_data = []
+
         try:
             previous = Response.objects.get(request=survey_id, responder=user)
             ratings = Rating.objects.filter(response=previous)
-            form_data = []
             for rating in ratings:
                 question = Question.objects.get(template=survey.template, question=rating.question)
                 form_data.append([question.id, question.question, rating.score])
@@ -63,7 +65,8 @@ def submit(request, survey_id):
         except Response.DoesNotExist:
             previous = None
             response_id = None
-            form_data = None
+            for question in survey.template.question_set.all():
+                form_data.append([question.id, question.question, None])
         data = {'response': previous, 'questions': form_data}
         form = SurveyResponseForm(data=data)
     return render(request, 'form.html', {'form': form, 'thanks': thanks, 'response_id': response_id})
