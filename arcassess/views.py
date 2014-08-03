@@ -112,8 +112,11 @@ def questions(request):
 class QuestionList(ListView):
     model = Question
     context_object_name = 'object_list'
-    # queryset = Question.objects.filter(archassess)
     template_name = 'questions.html'
+
+    def get_queryset(self):
+        return Question.objects.filter(template=self.kwargs['template_id'])
+
 
 
 class QuestionCreate(CreateView):

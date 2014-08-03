@@ -3,7 +3,8 @@
 {% block body %}
     <div class="container">
     <h2>Questions</h2>
-    <ul>
+        <p><a class="btn btn-primary btn-" role="button" href="{% url 'question_add' 1 %}">Add Question</a></p>
+        <ul>
         {% for question in object_list %}
             <li>{{ question.question }}</li>
         {% endfor %}

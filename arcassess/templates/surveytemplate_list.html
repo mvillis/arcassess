@@ -16,8 +16,8 @@
                 <th>Name</th>
             </tr>
             {% for template in object_list %}
-                <tr><td><a href="{% url "question_list" %}">{{ template.id }}</a></td>
-                <td><a href="{% url "question_list" %}">{{ template.name }}</a></td></tr>
+                <tr><td><a href="{% url "question_list" template.id %}">{{ template.id }}</a></td>
+                <td><a href="{% url "question_list" template.id %}">{{ template.name }}</a></td></tr>
             {% endfor %}
         </table>
     </div>
