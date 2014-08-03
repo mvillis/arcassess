@@ -5,11 +5,27 @@
 {% block title %}Team Temperature{% endblock %}
 
 {% block body %}
-<h1>Create a Team Temperature Survey</h1>
-    <p><a class="btn btn-primary btn-lg" role="button" href="{% url 'assess_create' %}">Launch</a></p>
-    <ul>
-        {% for assess in object_list %}
-            <li><a href="{% url 'result' assess.id %}">{{ assess }}</a></li>
-        {% endfor %}
-    </ul>
+{#<h1>Create a Team Temperature Survey</h1>#}
+    <p><a class="btn btn-primary btn-" role="button" href="{% url 'assess_create' %}">Create Survey</a></p>
+    <div class="panel panel-default">
+        <!-- Default panel contents -->
+        <div class="panel-heading">Past Surveys</div>
+        <div class="panel-body">
+            <p>Find all the templates you have launched below.</p>
+        </div>
+
+        <!-- Table -->
+        <table class="table">
+            <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Creation Date</th>
+            </tr>
+            {% for assess in object_list %}
+                <tr><td><a href="{% url 'result' assess.id %}">{{ assess.id }}</a></td>
+                    <td><a href="{% url 'result' assess.id %}">{{ assess.template }}</a></td>
+                    <td><a href="{% url 'result' assess.id %}">{{ assess.creation_date }}</a></td></tr>
+            {% endfor %}
+        </table>
+    </div>
 {% endblock %}
