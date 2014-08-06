@@ -9,26 +9,31 @@
         {% endif %}
         <h1>Questions</h1>
 
-        <form method="post">
+        <form role="form" method="post">
+            <fieldset>
             {% csrf_token %}
             {% if response_id %}
                 <input type="hidden" name="id" value="{{ response_id }}"/>
             {% endif %}
-            <fieldset id="ratings">
                 {% for question in form.data.questions %}
                     {{ form.score.errors }}
-                    <div class="field">
-                        <label for="{{ question.0 }}">{{ question.1 }} (1-10):</label><br/>
-                        <input id="{{ question.0 }}" type="number" name="{{ question.0 }}" value="{{ question.2 }}">
+                    <div class="form-group">
+                        <label for="{{ question.0 }}">{{ question.1 }}</label>
+                        <input type="number" class="form-control" id="{{ question.0 }}" name="{{ question.0 }}" placeholder="1-10"
+                               value="{{ question.2 }}">
                     </div>
                 {% endfor %}
-            </fieldset>
             {{ form.word.errors }}
-            <div class="field">
-                <label for="word">One word to describe your overall feeling:</label><br/>
-                <input id="word" type="text" name="word" value="{{ form.data.response.word }}">
+            <div class="input-group">
+                <div class="form-group">
+                    <label for="word">One word to describe your overall feeling:</label>
+                    <input type="text" class="form-control" id="word" name="word" value="{{ form.data.response.word }}">
+                </div>
             </div>
-            <input type="submit" value="Submit"/>
+            <div class="form-group">
+            <input lass="btn btn-default" type="submit" value="Submit"/>
+                </div>
+            </fieldset>
         </form>
     </div>
 {% endblock %}

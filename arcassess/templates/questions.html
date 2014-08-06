@@ -1,13 +1,29 @@
 {% extends "base.html" %}
 
 {% block body %}
-    <div class="container">
-    <h2>Questions</h2>
-        <p><a class="btn btn-primary btn-" role="button" href="{% url 'question_add' 1 %}">Add Question</a></p>
-        <ul>
-        {% for question in object_list %}
-            <li>{{ question.question }}</li>
-        {% endfor %}
-    </ul>
+<div class="container">
+        <div class="panel panel-default">
+            <!-- Default panel contents -->
+            <div class="panel-heading">Survey Questions</div>
+            <div class="panel-body">
+                <p>For a given template you will want to add a series of questions.</p>
+                <p><a class="btn btn-primary btn-" role="button" href="{% url 'question_add' view.kwargs.template_id %}">Add Question</a></p>
+            </div>
+
+            <!-- Table -->
+            <table class="table">
+                <tr>
+                    <th>Question</th>
+                    <th>Actions</th>
+                </tr>
+                {% for question in object_list %}
+                        <tr></tr><td>{{ question.question }}</td>
+                        <td>
+                            <a href="{% url "question_edit" view.kwargs.template_id question.id  %}"><span class="glyphicon glyphicon-pencil"></span></a>
+                            <a href="{% url "question_delete" view.kwargs.template_id question.id  %}"><span class="glyphicon glyphicon-trash"></span></a>
+                        </td></tr>
+                {% endfor %}
+            </table>
+        </div>
     </div>
 {% endblock %}

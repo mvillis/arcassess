@@ -9,7 +9,7 @@ from django.shortcuts import render, HttpResponseRedirect, get_object_or_404
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 
 from responses.forms import SurveyResponseForm, ErrorBox
-from responses.models import User, Assess, Response, Question, Rating
+from responses.models import User, Assess, Response, Question, Rating, SurveyTemplate
 from arcassess import utils, responses
 
 
@@ -118,24 +118,35 @@ class QuestionList(ListView):
         return Question.objects.filter(template=self.kwargs['template_id'])
 
 
-
 class QuestionCreate(CreateView):
     model = Question
     fields = ['template', 'question']
     template_name = 'question_form.html'
-    success_url = reverse_lazy('question_list')
+
+    def get_initial(self):
+        return {'template': self.kwargs['template_id']}
+
+    def get_success_url(self):
+        return reverse_lazy('question_list', kwargs={'template_id': self.kwargs['template_id']})
 
 
 class QuestionUpdate(UpdateView):
     model = Question
     fields = ['question']
     template_name = 'question_form.html'
-    success_url = reverse_lazy('question_list')
+
+    def get_success_url(self):
+        return reverse_lazy('question_list', kwargs={'template_id': self.kwargs['template_id']})
 
 
 class QuestionDelete(DeleteView):
     model = Question
     success_url = reverse_lazy('question_list')
+    template_name = 'question_confirm_delete.html'
+
+    def get_success_url(self):
+        return reverse_lazy('question_list', kwargs={'template_id': self.kwargs['template_id']})
+
 
 
 class AssessCreate(CreateView):
@@ -166,3 +177,15 @@ class AssessList(ListView):
         return Assess.objects.filter(creator=self.request.user).order_by('-creation_date')
 
 
+class SurveyTemplateCreate(CreateView):
+    model = SurveyTemplate
+    fields = ['name', 'word_flag']
+    template_name = 'surveytemplate_form.html'
+    success_url = reverse_lazy('template_list')
+
+    # def form_valid(self, form):
+    #     assess = form.save(commit=False)
+    #     assess.creator = self.request.user
+    #     assess.save()
+    #     return HttpResponseRedirect(reverse_lazy('result', kwargs={'survey_id': assess.id}))
+    #     # return HttpResponseRedirect('/admin/%s' % form_id)
