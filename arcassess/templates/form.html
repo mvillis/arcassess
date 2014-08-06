@@ -5,7 +5,9 @@
 {% block body %}
     <div class="container">
         {% if thanks %}
-            <div class="info box">{{ thanks }}</div>
+            <div class="alert alert-info" role="alert">
+                {{ thanks }}
+            </div>
         {% endif %}
         <h1>Questions</h1>
 

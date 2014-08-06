@@ -48,7 +48,7 @@ def submit(request, survey_id):
             data = {'response': response, 'questions': form_data}
             form = SurveyResponseForm(data=data)
             thanks = "Thank you for submitting your answers. You can " \
-                     "amend them now or later if you need to"
+                     "amend them now or later if you need to."
         else:
             # data = {'response': {'word': ''}, 'questions': form_data}
             form = SurveyResponseForm(data=data)
