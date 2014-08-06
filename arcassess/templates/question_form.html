@@ -3,8 +3,11 @@
 {% block body %}
     <div class="container">
     <form action="" method="post">{% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" value="Save" />
+        <div class="form-group">
+            <label for="question">Question</label>
+            <input type="text" class="form-control" id="question" name="question" value="{{ question.question }}">
+        </div>
+        <input class="btn btn-default" type="submit" value="Save" />
     </form>
     </div>
 {% endblock %}
