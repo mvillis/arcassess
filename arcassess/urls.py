@@ -1,5 +1,6 @@
 from django.conf.urls import patterns, include, url
 from django.contrib.auth.decorators import login_required
+from django.core.urlresolvers import reverse_lazy
 from django.views.generic import TemplateView, ListView, CreateView
 from django.conf import settings
 from arcassess.responses.models import SurveyTemplate
@@ -21,6 +22,7 @@ urlpatterns = patterns('',
     url(r'^admin/$', login_required(AssessList.as_view()), name='admin'),
     url(r'^admin/create/$', login_required(AssessCreate.as_view()), name='assess_create'),
     url(r'^accounts/login/$', 'django.contrib.auth.views.login', {'template_name': 'login.html'}, name='login'),
+    url(r'^accounts/logout/$', 'django.contrib.auth.views.logout', {'next_page': reverse_lazy('home')}, name='logout'),
     url(r'^accounts/register/$', register, name='register'),
     url(r'^([0-9a-zA-Z]{8})$', submit),
     url(r'^static/(.*)$', 'django.views.static.serve', {'document_root': settings.STATIC_ROOT}),
