@@ -6,12 +6,12 @@
             {% csrf_token %}
             {{ form.username.errors }}
             <div class="form-group">
-                <label for="id_username">Username</label>
-                <input type="text" class="form-control" id="id_username" name="username" placeholder="Enter username">
+                <label for="id_username">Pick a Username</label>
+                <input type="text" class="form-control" id="id_username" name="username" placeholder="Enter Username">
             </div>
             {{ form.password1.errors }}
             <div class="form-group">
-                <label for="id_password1">Password</label>
+                <label for="id_password1">Choose a Password</label>
                 <input type="password" class="form-control" id="id_password1" name="password1" placeholder="Enter Password">
             </div>
             {{ form.password2.errors }}
@@ -20,6 +20,7 @@
                 <input type="password" class="form-control" id="id_password2" name="password2" placeholder="Enter Password Again">
             </div>
             <button type="submit" value="Register" class="btn btn-default">Register</button>
+            <a href="{% url "home" %}" class="btn btn-link" role="button">Cancel</a>
             <input type="hidden" name="next" value="{{ next }}"/>
         </form>
     </div>
