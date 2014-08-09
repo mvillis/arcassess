@@ -2,23 +2,24 @@
 
 {% block body %}
     <div class="container">
-        <form method="post" action="{% url 'register' %}">
+        <form role="form" method="post" action="{% url 'register' %}">
             {% csrf_token %}
-            <table>
-                <tr>
-                    <td>{{ form.username.label_tag }}</td>
-                    <td>{{ form.username }} {{ form.username.errors.as_text }}</td>
-                </tr>
-                <tr>
-                    <td>{{ form.password1.label_tag }}</td>
-                    <td>{{ form.password1 }} {{ form.password1.errors.as_text }}</td>
-                </tr>
-                <tr>
-                    <td>{{ form.password2.label_tag }}</td>
-                    <td>{{ form.password2 }} {{ form.password2.errors.as_text }}</td>
-                </tr>
-            </table>
-            <input type="submit" value="register"/>
+            {{ form.username.errors }}
+            <div class="form-group">
+                <label for="id_username">Username</label>
+                <input type="text" class="form-control" id="id_username" name="username" placeholder="Enter username">
+            </div>
+            {{ form.password1.errors }}
+            <div class="form-group">
+                <label for="id_password1">Password</label>
+                <input type="password" class="form-control" id="id_password1" name="password1" placeholder="Enter Password">
+            </div>
+            {{ form.password2.errors }}
+            <div class="form-group">
+                <label for="id_password2">Password Confirmation</label>
+                <input type="password" class="form-control" id="id_password2" name="password2" placeholder="Enter Password Again">
+            </div>
+            <button type="submit" value="Register" class="btn btn-default">Register</button>
             <input type="hidden" name="next" value="{{ next }}"/>
         </form>
     </div>
