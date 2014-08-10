@@ -17,20 +17,24 @@
             {% if response_id %}
                 <input type="hidden" name="id" value="{{ response_id }}"/>
             {% endif %}
-                {% for question in form.data.questions %}
-                    {{ form.score.errors }}
+                {{rating_forms.management_form}}
+                {% for form in rating_forms.forms %}
+                    {{ form.errors }}
                     <div class="form-group">
-                        <label for="{{ question.0 }}">{{ question.1 }}</label>
-                        <input type="number" class="form-control" id="{{ question.0 }}" name="{{ question.0 }}" placeholder="1-10"
-                               value="{{ question.2 }}">
+                        {{ form.id }}
+                        <label for="{{ form.score.id_for_label }}">{{ form.initial.question }}</label>
+                        <input type="number" class="form-control" id="{{ form.score.id_for_label }}" name="{{ form.score.html_name }}" placeholder="1-10"
+                               value="{{ form.score.value }}">
+                        <input type="hidden" class="form-control" id="{{ form.question.id_for_label }}" name="{{ form.question.html_name }}"
+                               value="{{ form.question.value }}">
                     </div>
                 {% endfor %}
-            {{ form.word.errors }}
+            {{ response_form.errors }}
                 <div class="form-group">
-                    <label for="word">One word to describe your overall feeling:</label>
-                    <input type="text" class="form-control" id="word" name="word" value="{{ form.data.response.word }}">
+                    <label for="{{ response_form.word.id_for_label }}">One word to describe your overall feeling:</label>
+                    <input type="text" class="form-control" id="{{ response_form.word.id_for_label }}" name="{{ response_form.word.html_name }}" value="{{ response_form.word.value|default_if_none:"" }}">
                 </div>
-            <div class="form-group">
+                <div class="form-group">
             <input class="btn btn-default" type="submit" value="Submit"/>
                 </div>
             </fieldset>

@@ -4,11 +4,11 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import UserCreationForm
 from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse_lazy
-from django.http import request
+from django.forms.models import modelformset_factory
 from django.shortcuts import render, HttpResponseRedirect, get_object_or_404
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 
-from responses.forms import SurveyResponseForm, ErrorBox
+from responses.forms import ErrorBox, RatingForm, ResponseForm
 from responses.models import User, Assess, Response, Question, Rating, SurveyTemplate
 from arcassess import utils, responses
 
@@ -20,56 +20,71 @@ def admin(request):
 
 
 def submit(request, survey_id):
+
     userid = responses.get_or_create_userid(request)
     user, created = User.objects.get_or_create(id=userid)
     survey = get_object_or_404(Assess, pk=survey_id)
-    questions = Question.objects.filter(template_id=survey.template.id)
     thanks = ""
+    response_id = None
+
+    if request.method == 'GET':
+        try:
+            response = Response.objects.get(responder=user, request=survey)
+            RatingFormSet = modelformset_factory(Rating, form=RatingForm, max_num=1)
+            ratings_formset = RatingFormSet(queryset=Rating.objects.filter(response=response))
+            response_form = ResponseForm(instance=response)
+            response_id = response.id
+        except Response.DoesNotExist:
+            initial_ratings = []
+            questions = Question.objects.filter(template_id=survey.template.id)
+            for question in questions:
+                initial_ratings.append({'question': question.question, 'score': None})
+            RatingFormSet = modelformset_factory(Rating, form=RatingForm, extra=len(questions))
+            ratings_formset = RatingFormSet(initial=initial_ratings, queryset=Rating.objects.none())
+            response_form = ResponseForm()
+            response_id = None
+
+        return render(request, 'form.html', {'rating_forms': ratings_formset,
+                                             'response_form': response_form,
+                                             'thanks': None,
+                                             'response_id': response_id})
+
     if request.method == 'POST':
-        form = SurveyResponseForm(request.POST, error_class=ErrorBox)
+        RatingFormSet = modelformset_factory(Rating, form=RatingForm)
+        ratings_formset = RatingFormSet(request.POST, error_class=ErrorBox)
+        response_form = ResponseForm(request.POST, error_class=ErrorBox)
         response_id = request.POST.get('id', None)
-        if form.is_valid():
-            srf = form.cleaned_data
-            # TODO check that id is unique!
-            response = Response(id=response_id, request=survey, word=srf['word'], responder=user)
+        ratings = []
+        if ratings_formset.is_valid() and response_form.is_valid():
+            response = Response(request=survey, responder=user, word=response_form.clean_word(), id=response_id)
             response.save()
             response_id = response.id
-            form_data = []
-            for question in questions:
-                try:
-                    previous = Rating.objects.get(response=response, question=question.question)
-                    previous.score = form.data[str(question.id)]
-                    previous.save()
-                    form_data.append([question.id, question.question, previous.score])
-                except Rating.DoesNotExist:
-                    rating = Rating(response=response, question=question.question, score=form.data[str(question.id)])
-                    rating.save()
-                    form_data.append([question.id, question.question, rating.score])
-            data = {'response': response, 'questions': form_data}
-            form = SurveyResponseForm(data=data)
+            for rating in ratings_formset:
+                if rating.cleaned_data['id']:
+                    new_rating = Rating(
+                        response=response,
+                        question=rating.cleaned_data['question'],
+                        score=rating.cleaned_data['score'],
+                        id=rating.cleaned_data['id'].id
+                    )
+                else:
+                    new_rating = Rating(
+                        response=response,
+                        question=rating.cleaned_data['question'],
+                        score=rating.cleaned_data['score'],
+                        id=None
+                    )
+                new_rating = new_rating.save()
+                ratings.append(new_rating)
+            RatingFormSet = modelformset_factory(Rating, form=RatingForm, max_num=1)
+            ratings_formset = RatingFormSet(queryset=Rating.objects.filter(response=response))
+            response_form = ResponseForm(instance=response)
             thanks = "Thank you for submitting your answers. You can " \
                      "amend them now or later if you need to."
-        else:
-            # data = {'response': {'word': ''}, 'questions': form_data}
-            form = SurveyResponseForm(data=data)
-    else:
-        form_data = []
 
-        try:
-            previous = Response.objects.get(request=survey_id, responder=user)
-            ratings = Rating.objects.filter(response=previous)
-            for rating in ratings:
-                question = Question.objects.get(template=survey.template, question=rating.question)
-                form_data.append([question.id, question.question, rating.score])
-            response_id = previous.id
-        except Response.DoesNotExist:
-            previous = None
-            response_id = None
-            for question in survey.template.question_set.all():
-                form_data.append([question.id, question.question, None])
-        data = {'response': previous, 'questions': form_data}
-        form = SurveyResponseForm(data=data)
-    return render(request, 'form.html', {'form': form, 'thanks': thanks, 'response_id': response_id})
+        return render(request, 'form.html',
+                  {'rating_forms': ratings_formset, 'response_form': response_form, 'thanks': thanks,
+                   'response_id': response_id})
 
 
 def result(request, survey_id):
@@ -148,7 +163,6 @@ class QuestionDelete(DeleteView):
         return reverse_lazy('question_list', kwargs={'template_id': self.kwargs['template_id']})
 
 
-
 class AssessCreate(CreateView):
     model = Assess
     fields = ['template']
@@ -160,7 +174,6 @@ class AssessCreate(CreateView):
         assess.creator = self.request.user
         assess.save()
         return HttpResponseRedirect(reverse_lazy('result', kwargs={'survey_id': assess.id}))
-        # return HttpResponseRedirect('/admin/%s' % form_id)
 
 
 class AssessDelete(DeleteView):
@@ -182,10 +195,3 @@ class SurveyTemplateCreate(CreateView):
     fields = ['name', 'word_flag']
     template_name = 'surveytemplate_form.html'
     success_url = reverse_lazy('template_list')
-
-    # def form_valid(self, form):
-    #     assess = form.save(commit=False)
-    #     assess.creator = self.request.user
-    #     assess.save()
-    #     return HttpResponseRedirect(reverse_lazy('result', kwargs={'survey_id': assess.id}))
-    #     # return HttpResponseRedirect('/admin/%s' % form_id)
