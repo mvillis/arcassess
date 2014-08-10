@@ -20,9 +20,10 @@ class ErrorBox(ErrorList):
         return "<br/>".join(e for e in self)
 
 
-class SurveyResponseForm(forms.Form):
-
-    word = forms.CharField(label='Word', max_length=32)
+class RatingForm(forms.ModelForm):
+    class Meta:
+        model = Rating
+        fields = ['question', 'score']
 
     def clean_score(self):
         score = self.cleaned_data['score']
@@ -32,6 +33,12 @@ class SurveyResponseForm(forms.Form):
             raise forms.ValidationError('temperature %d is too high' % score)
         return score
 
+
+class ResponseForm(forms.ModelForm):
+    class Meta:
+        model = Response
+        fields = ['word']
+
     def clean_word(self):
         word = self.cleaned_data['word']
         matches = re.findall(r'[^A-Za-z0-9\'-]', word)
@@ -40,5 +47,7 @@ class SurveyResponseForm(forms.Form):
                     '{matches}'.format(word=escape(word), matches=list({str(x) for x in matches}))
             raise forms.ValidationError(error)
         return word
+
+
 
 

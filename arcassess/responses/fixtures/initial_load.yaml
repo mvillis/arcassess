@@ -8,3 +8,8 @@
   fields:
     question: Successful?
     template: 1
+- model: responses.Question
+  pk: 2
+  fields:
+    question: Having a good time?
+    template: 1
