@@ -1,10 +1,23 @@
 {% extends "base.html" %}
-
+{% block head %}
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#template_form').bootstrapValidator();
+        });
+    </script>
+{% endblock %}
 {% block body %}
     <div class="container">
-    <form action="" method="post">{% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" value="Save" />
+    <form id="template_form" action="" method="post">{% csrf_token %}
+        <div class="form-group">
+            <label for="id_name">Survey Name</label>
+            <input type="text" class="form-control" id="id_name" name="name" value="{{ form.name.value|default_if_none:"" }}"
+                   data-bv-message="The template name is not valid" required
+                   data-bv-notempty-message="The template name is required and cannot be empty"
+                   pattern="^[a-zA-Z0-9\s?!]+$"
+                   data-bv-regexp-message="A template name can only consist of alphabetical characters, numbers, spaces and ?!">
+        </div>
+        <input class="btn btn-default" type="submit" value="Save" />
     </form>
     </div>
 {% endblock %}

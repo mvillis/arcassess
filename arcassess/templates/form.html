@@ -1,7 +1,13 @@
 {% extends "base.html" %}
 
 {% block title %}ArcAssess{% endblock %}
-
+{% block head %}
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#response').bootstrapValidator();
+    });
+</script>
+{% endblock %}
 {% block body %}
     <div class="container">
         {% if thanks %}
@@ -11,7 +17,7 @@
         {% endif %}
         <h1>Questions</h1>
 
-        <form role="form" method="post">
+        <form id="response"role="form" method="post">
             <fieldset>
             {% csrf_token %}
             {% if response_id %}
@@ -24,7 +30,9 @@
                         {{ form.id }}
                         <label for="{{ form.score.id_for_label }}">{{ form.initial.question }}</label>
                         <input type="number" class="form-control" id="{{ form.score.id_for_label }}" name="{{ form.score.html_name }}" placeholder="1-10"
-                               value="{{ form.score.value }}">
+                               value="{{ form.score.value|default_if_none:"" }}" required min="1"  data-bv-greaterthan-inclusive="true"
+                               data-bv-greaterthan-message="The input must be greater than or equal to 10" max="10"
+                               data-bv-lessthan-inclusive="true" data-bv-lessthan-message="The input must be between 1 and 10">
                         <input type="hidden" class="form-control" id="{{ form.question.id_for_label }}" name="{{ form.question.html_name }}"
                                value="{{ form.question.value }}">
                     </div>

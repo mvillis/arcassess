@@ -1,23 +1,35 @@
 {% extends "base.html" %}
-
+{% block head %}
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#register').bootstrapValidator();
+        });
+    </script>
+{% endblock %}
 {% block body %}
     <div class="container">
-        <form role="form" method="post" action="{% url 'register' %}">
+        <form id="register" role="form" method="post" action="{% url 'register' %}">
             {% csrf_token %}
             {{ form.username.errors }}
             <div class="form-group">
                 <label for="id_username">Pick a Username</label>
-                <input type="text" class="form-control" id="id_username" name="username" placeholder="Enter Username">
+                <input type="text" class="form-control" id="id_username" name="username" placeholder="Enter Username" data-bv-message="The username is not valid"
+
+                       required
+                       data-bv-notempty-message="The username is required and cannot be empty"
+
+                       pattern="^[a-zA-Z0-9]+$"
+                       data-bv-regexp-message="The username can only consist of alphabetical, number">
             </div>
             {{ form.password1.errors }}
             <div class="form-group">
                 <label for="id_password1">Choose a Password</label>
-                <input type="password" class="form-control" id="id_password1" name="password1" placeholder="Enter Password">
+                <input type="password" class="form-control" id="id_password1" name="password1" placeholder="Enter Password" required>
             </div>
             {{ form.password2.errors }}
             <div class="form-group">
                 <label for="id_password2">Password Confirmation</label>
-                <input type="password" class="form-control" id="id_password2" name="password2" placeholder="Enter Password Again">
+                <input type="password" class="form-control" id="id_password2" name="password2" placeholder="Enter Password Again" required>
             </div>
             <button type="submit" value="Register" class="btn btn-default">Register</button>
             <a href="{% url "home" %}" class="btn btn-link" role="button">Cancel</a>
