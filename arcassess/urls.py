@@ -5,7 +5,7 @@ from django.views.generic import TemplateView, ListView, CreateView
 from django.conf import settings
 from arcassess.responses.models import SurveyTemplate
 
-from arcassess.views import home, admin, submit, register, result, QuestionList, QuestionCreate, QuestionUpdate, QuestionDelete, AssessCreate, AssessList, SurveyTemplateCreate
+from arcassess.views import home, admin, submit, register, result, QuestionList, QuestionCreate, QuestionUpdate, QuestionDelete, AssessCreate, AssessList, SurveyTemplateCreate, chart
 
 urlpatterns = patterns('',
     url(r'^$', home, name='home'),
@@ -21,6 +21,7 @@ urlpatterns = patterns('',
     url(r'^admin/templates/add/$', SurveyTemplateCreate.as_view(), name='template_add'),
     url(r'^admin/$', login_required(AssessList.as_view()), name='admin'),
     url(r'^admin/create/$', login_required(AssessCreate.as_view()), name='assess_create'),
+    url(r'^admin/chartdemo/$', login_required(chart), name='chart'),
     url(r'^accounts/login/$', 'django.contrib.auth.views.login', {'template_name': 'login.html'}, name='login'),
     url(r'^accounts/logout/$', 'django.contrib.auth.views.logout', {'next_page': reverse_lazy('home')}, name='logout'),
     url(r'^accounts/register/$', register, name='register'),

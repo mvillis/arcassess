@@ -1,0 +1,13 @@
+{% load staticfiles %}
+{% load nvd3_tags %}
+<head>
+    <link rel="stylesheet" href="{% static "css/nv.d3.css" %}">
+
+    <script type="text/javascript" src="{% static "js/d3.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/nv.d3.min.js" %}"></script>
+    {% load_chart charttype chartdata chartcontainer extra %}
+</head>
+<body>
+<h1>Fruits vs Calories</h1>
+{% include_container chartcontainer 400 600 %}
+</body>

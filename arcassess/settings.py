@@ -125,6 +125,7 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
     'arcassess.responses',
     'south',
+    'django_nvd3'
 )
 
 PASSWORD_HASHERS = (

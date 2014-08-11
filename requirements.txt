@@ -11,3 +11,6 @@ wsgiref==0.1.2
 py-bcrypt==0.4
 PyYAML==3.11
 pystache==0.5.4
+django-nvd3==0.7.4
+python-nvd3==0.12.2
+

@@ -1,3 +1,4 @@
+import time
 from datetime import datetime
 
 from django.contrib.auth import authenticate, login
@@ -5,7 +6,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse_lazy
 from django.forms.models import modelformset_factory
-from django.shortcuts import render, HttpResponseRedirect, get_object_or_404
+from django.shortcuts import render, HttpResponseRedirect, get_object_or_404, render_to_response
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 
 from responses.forms import ErrorBox, RatingForm, ResponseForm
@@ -122,6 +123,26 @@ def questions(request):
         survey.save()
         return HttpResponseRedirect('/admin/%s' % form_id)
     return render(request, 'questions.html')
+
+
+def chart(request):
+    xdata = ["Apple", "Apricot", "Avocado", "Banana", "Boysenberries", "Blueberries", "Dates", "Grapefruit", "Kiwi", "Lemon"]
+    ydata = [52, 48, 160, 94, 75, 71, 490, 82, 46, 17]
+    chartdata = {'x': xdata, 'y': ydata}
+    charttype = "pieChart"
+    chartcontainer = 'piechart_container'
+    data = {
+        'charttype': charttype,
+        'chartdata': chartdata,
+        'chartcontainer': chartcontainer,
+        'extra': {
+            'x_is_date': False,
+            'x_axis_format': '',
+            'tag_script_js': True,
+            'jquery_on_ready': False,
+            }
+    }
+    return render_to_response('piechart.html', data)
 
 
 class QuestionList(ListView):
